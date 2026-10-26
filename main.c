@@ -59,6 +59,9 @@ int main(int argc, char *argv[]) {
 
 	//default view pre loaded simple program
 	//init
+	SCREEN *cur = NULL;
+	SCREEN **screens;
+	COMPUTER *pc = initPC();
 	PAX_ACTIVE_SCREEN active = DISM_SCREEN;
 	SCREEN *screens[TOTAL_SCREENS];
 	screens[MAIN_SCREEN]=ScreenInit(elf); //base screen metadata type settings always
@@ -83,7 +86,7 @@ int main(int argc, char *argv[]) {
 
 
 	
-
+	input_loop()
 	while (1) {
 		if (read(STDIN_FILENO, &in, 1) & 1 &&
 			PAX_EXIT == stateM->StateMachineMode(stateM,in)) {

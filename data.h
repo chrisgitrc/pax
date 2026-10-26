@@ -89,7 +89,7 @@ typedef struct CPU_STATE{
 	uint64_t rdi;
 	uint64_t rip;
 	}VM_CPU;
-typedef struct Core { 
+typedef struct binfile{ 
 	uint8_t *buff; // = height * MAX_INSTRUCTION_LEN 
 	int fd;
 	size_t read; //for read();

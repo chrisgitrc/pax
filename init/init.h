@@ -1,3 +1,17 @@
+COMPUTER *initPC(Binary *b) {
+	switch (b->e_hdr.Arch) {
+		case :
+		break;
+		case:
+		break;
+		default:
+			return PAX_UNSUPPORTED_ARCHITECTURE;
+	}
+	COMPUTER *pc = malloc(sizeof (struct COMPUTER));
+	pc->cpu = initCPU();
+	pc->mem = initMEM();
+	return COMPUTER;
+}
 VM_CPU *InitCPU(Binary *b) {
 	VM_CPU * cpu = malloc(sizeof(VM_CPU));
 	cpu->rip = b->phtable[b->xseg].vaddr;
