@@ -62,7 +62,10 @@ typedef struct Elf_header64{
 	uint8_t Width;
 	uint8_t Data;
 	uint8_t eVersion;
-	uint8_t ABI;
+	uint8_t machine;
+	#define EM_X86_64 62
+	#define EM_ARM 40
+	#define EM_ARM64 183
 	uint64_t Padding;
 	uint16_t Type;
 	uint16_t Arch;
@@ -88,7 +91,30 @@ typedef struct CPU_STATE{
 	uint64_t rsi;
 	uint64_t rdi;
 	uint64_t rip;
-	}VM_CPU;
+	}CPU;
+
+typedef struct MEM_SEGMENT{
+	uint8_t perms;
+	MSEC *sections;
+	
+	}MSEG;
+typedef struct MEM_SECTION{
+	
+	}MSEC;
+typedef struct SYMBOL {
+	size_t addr;
+	char * str;
+	}SYMBOL;
+typedef struct MEM_ACCESS{
+	size_t size;
+	void *raw;
+}MEMACC;
+typedef struct MEM_STATE {
+	MEMACC *allocated;
+	MSEG **segments;
+	MSEC **sections;
+	SYMBOL *symbols;
+	}MEMORY;
 typedef struct binfile{ 
 	uint8_t *buff; // = height * MAX_INSTRUCTION_LEN 
 	int fd;
@@ -101,6 +127,24 @@ typedef struct binfile{
 	ZydisDisassembledInstruction *buffer; // = height *zu(ZDI) used by zydis disassembled screen
 	
 	}Binary;
+/*
+ * holds all info about the emulated machine
+ */
+typedef struct COMPUTER {
+	int (disassemble*)(void*); 
+	int (emulate*)(void*);
+	
+	void *cpu;
+	MEMORY *mem;
+}COMPUTER;
+/*
+ * holds all info regarding a working file.
+ * allows for maintaining of multiple files.
+ */
+typedef struct PAX_BUFFER {
+	COMPUTER pc;
+	uint8_t flags;
+}BUFFER;
 typedef struct mmapVAR{
 	char *name; //symbol name if found else alphbetical
 	uint64_t addr; //virtual
@@ -183,4 +227,7 @@ typedef struct DebugObject {
 	Variable *variables;
 		
 }Object;
-
+struct ARGUMENTS {
+	uint8_t flag;
+	char **value;
+}PFLAG;

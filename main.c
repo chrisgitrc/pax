@@ -51,7 +51,55 @@ void print_text_style_pallete() {
 
 
 int main(int argc, char *argv[]) {
-	Binary *elf = PaxInit(DEMO_FILE); 
+	#define PAX_TYPE (1 << 0)
+	#define PAX_ARCH (1 << 1)
+	PFLAG *flagsv = process_cla(argc, argv);
+	char **values = flagsv->value;
+	
+	Binary *file = PaxInitElf(DEMO_FILE);
+	while (*argument) {
+	switch (argument->flag) {
+		case argument->flag & PAX_TYPE:
+			if (!argument->str) {
+				puts("-t type not specified.exiting.");	
+				return;
+			}
+			if (strcmp(argument->str, "raw")) {
+				FileInit = PaxInitRaw;
+			}
+			FileInit = PaxInitElf;
+			FileInit = PaxInitAsm;
+			break;
+	}
+
+	}
+	if (elf ==NULL) {
+		return -1;
+		}
+
+	char in = 0; {
+	}
+	else if (flagsv->flag & PAX_OPEN == PAX_ORAW) {
+		if (*values == NULL) {
+			printf("-b(binary) file not specified. exiting.");
+		}
+		Binary *file = PaxInitRaw(*values);
+i		if (!file) return;
+		
+	}
+	else if (flagsv->flag & PAX_OPEN == PAX_OELF) {
+		if (*values == NULL) {
+		puts("-e(elf) file not specified. exiting.");
+		return;
+		}
+		Binary *file = PaxInitElf(*values++); 
+		if (!file) return;
+	
+	}
+	else {
+		Binary *elf = PaxInit(DEMO_FILE); 
+	}
+	}
 	if (elf ==NULL) {
 		return -1;
 		}
@@ -62,6 +110,7 @@ int main(int argc, char *argv[]) {
 	SCREEN *cur = NULL;
 	SCREEN **screens;
 	COMPUTER *pc = initPC();
+
 	PAX_ACTIVE_SCREEN active = DISM_SCREEN;
 	SCREEN *screens[TOTAL_SCREENS];
 	screens[MAIN_SCREEN]=ScreenInit(elf); //base screen metadata type settings always

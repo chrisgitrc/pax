@@ -1,8 +1,11 @@
 COMPUTER *initPC(Binary *b) {
 	switch (b->e_hdr.Arch) {
-		case :
+		case EM_X86_64:
+						
 		break;
-		case:
+		case EM_ARM:
+		break;
+		case EM_ARM64:
 		break;
 		default:
 			return PAX_UNSUPPORTED_ARCHITECTURE;
