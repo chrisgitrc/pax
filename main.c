@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <sys/wait.h>
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -50,66 +48,29 @@ void print_text_style_pallete() {
 	}
 
 
+#define USAGE "Usage: [-r | -e | -a | -d] [file]\n\t
+-r [file]\tOpen machine instruction file. target architecture specified by --target. Open a new file if no [file] is specified.byte sequences are interpreted once after a set amount of time without input, and reinterpreted after more input is recieved. Interpretation is done as if in highest level of privilege.Interupts and MMIO are implemented as described in EXTERNAL section.\n\t
+-e [file]\tOpen ELF file for emulation. emulation allows editing of instructions and instant reinterpretation. The emulation of system calls, interupts, and mmio can be configured to emulate a certain hardware/software scenario. System calls are initially set to passthrough to the native os if not pax file for syscalls is found. interupts and mmio disable the use of syscalls and are treated as nop. External 'device' configuration is described in the EXTERNAL section.\n\t
+-a [file]\t open [file] or new file for assembly interpretation. --target specifies the assembly ISA. only .text and .data directives allowed.A fixed set of instructions are emulated/simulated and cpu state is saved after each fixed number of instruction are processed. modyfing a line reinterptus state from the closest saved snapshot.\n\t
+-d debug a ELF file natively using ptrace. track memory allocations and stack state to display.\n
+EXTERNAL\n\t 
+Interupts and MMIO or syscalls are handled by setting up 'external' devices through a specified file per device, .pax files are interpreted from the calling directory and loaded into memory unless -d flag specified. A Pax file consists of two sections seperated by a single line with the section name surrouned by []. [DESC] and [CODE] are the sections. [DESC] describes the device including MMIO ranges, and if the device is a dedicated syscall handler. [CODE] describes the logic behind how the device triggers interupts or interacts with the emulated CPU. An empty or missing [CODE] leaves the user to manually trigger interupts in the IDE with the int NAME command to trigger interupt from device NAME . Successfully interpreted Pax files are executed on the native OS as seperate programs and connect to the emulated CPU in the main pax session through a socket found in /proc/pax/ if not specifed by -s. empty [CODE] files are handled in the main process"
 int main(int argc, char *argv[]) {
-	#define PAX_TYPE (1 << 0)
-	#define PAX_ARCH (1 << 1)
-	PFLAG *flagsv = process_cla(argc, argv);
-	char **values = flagsv->value;
-	
-	Binary *file = PaxInitElf(DEMO_FILE);
-	while (*argument) {
-	switch (argument->flag) {
-		case argument->flag & PAX_TYPE:
-			if (!argument->str) {
-				puts("-t type not specified.exiting.");	
-				return;
-			}
-			if (strcmp(argument->str, "raw")) {
-				FileInit = PaxInitRaw;
-			}
-			FileInit = PaxInitElf;
-			FileInit = PaxInitAsm;
-			break;
+	PInstance *ci = NULL;
+	if (argc == 1) ci = NewPaxInstance(NULL)//default raw
+	if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")) {
+		puts(USAGE);
 	}
-
+	else { 
+		ci = NewPaxInstance(DEMO_FILE);
 	}
-	if (elf ==NULL) {
-		return -1;
-		}
-
-	char in = 0; {
-	}
-	else if (flagsv->flag & PAX_OPEN == PAX_ORAW) {
-		if (*values == NULL) {
-			printf("-b(binary) file not specified. exiting.");
-		}
-		Binary *file = PaxInitRaw(*values);
-i		if (!file) return;
-		
-	}
-	else if (flagsv->flag & PAX_OPEN == PAX_OELF) {
-		if (*values == NULL) {
-		puts("-e(elf) file not specified. exiting.");
-		return;
-		}
-		Binary *file = PaxInitElf(*values++); 
-		if (!file) return;
-	
-	}
-	else {
-		Binary *elf = PaxInit(DEMO_FILE); 
-	}
-	}
+	if (ci == NULL) return 1;
+	Binary *elf = PaxInitElf(DEMO_FILE);
 	if (elf ==NULL) {
 		return -1;
 		}
 	char in = 0;
 
-	//default view pre loaded simple program
-	//init
-	SCREEN *cur = NULL;
-	SCREEN **screens;
-	COMPUTER *pc = initPC();
 
 	PAX_ACTIVE_SCREEN active = DISM_SCREEN;
 	SCREEN *screens[TOTAL_SCREENS];
@@ -135,8 +96,8 @@ i		if (!file) return;
 
 
 	
-	input_loop()
 	while (1) {
+		if (PAX_EXIT == ci->smode(read(STDIN_FILENO, &in, 1), ci))
 		if (read(STDIN_FILENO, &in, 1) & 1 &&
 			PAX_EXIT == stateM->StateMachineMode(stateM,in)) {
 			break;

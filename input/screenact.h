@@ -1,0 +1,10 @@
+typedef enum ACTION {
+	NOMAP=0,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	OPEN,
+	NORMAL,
+	COMMAND
+}

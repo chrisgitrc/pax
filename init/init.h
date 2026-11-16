@@ -1,7 +1,24 @@
-COMPUTER *initPC(Binary *b) {
-	switch (b->e_hdr.Arch) {
+PInstance *NewPaxInstance(char *file) {
+	PInstance *n = malloc(sizeof(PInstance));
+	n->screen = malloc(sizeof(SCREEN*)*2);
+	n->screen[0] = ScreenInit();
+	if (file == NULL) {
+		n->elf = NULL
+		n->screen[1] = ScreenInitZydis(NULL);
+	}
+	else {
+		n->elf = PaxInitElf(file);
+	}
+	n->pc = initPC(b);
+}
+COMPUTER *initPC(int file,MACHINE_ARCH type) {
+	COMPUTER *pc = malloc(sizeof (struct COMPUTER));
+	pc->cpu = initCPU();
+	pc->mem = initMEM();
+	switch (type) {
 		case EM_X86_64:
-						
+			pc->dism = ZYDIS_DISASSEMBLE;
+			pc->dtos = ZYDIS_QUERY; 			
 		break;
 		case EM_ARM:
 		break;
@@ -10,9 +27,6 @@ COMPUTER *initPC(Binary *b) {
 		default:
 			return PAX_UNSUPPORTED_ARCHITECTURE;
 	}
-	COMPUTER *pc = malloc(sizeof (struct COMPUTER));
-	pc->cpu = initCPU();
-	pc->mem = initMEM();
 	return COMPUTER;
 }
 VM_CPU *InitCPU(Binary *b) {

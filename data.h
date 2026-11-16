@@ -115,6 +115,15 @@ typedef struct MEM_STATE {
 	MSEC **sections;
 	SYMBOL *symbols;
 	}MEMORY;
+/*holds state of current session*/
+typedef struct PaxInstance {
+	int file;
+	Binary *elf;
+	SCREEN **screen;
+	COMPUTER *pc;
+	DISM * dism; 
+//	ASM *assembler;
+	}PInstance;
 typedef struct binfile{ 
 	uint8_t *buff; // = height * MAX_INSTRUCTION_LEN 
 	int fd;
@@ -131,10 +140,9 @@ typedef struct binfile{
  * holds all info about the emulated machine
  */
 typedef struct COMPUTER {
-	int (disassemble*)(void*); 
-	int (emulate*)(void*);
-	
-	void *cpu;
+	int *ext_dev;
+	size_t extc;
+	(void* dism)(void *)
 	MEMORY *mem;
 }COMPUTER;
 /*
@@ -206,6 +214,9 @@ typedef struct file_buffer{
 	PROCTRACE *trace; 
 	uint8_t flags;
 	//needed functions for all type of screens dependent to SCREEN.trace specific data
+	char keymap[255];
+	void *(*mode)(char, PInstance)
+
 	void (*handleup)(Binary*, struct file_buffer*, VM_CPU*);
 	void (*handledn)(Binary *, struct file_buffer*,VM_CPU*);
 	void (*handleinfo)(PROCTRACE *, char **, uint32_t length, uint32_t height);

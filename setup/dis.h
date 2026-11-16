@@ -13,7 +13,7 @@
 * @param PC address to start counting from
 * @return A list containing ZydisDisassembledInstruction of size lines 
 */
-void ZYDIS_DISASSEMBLE(uint8_t *buff, ZydisDisassembledInstruction *decoded_instructions, size_t n, ZyanU64 *PC) {
+void *ZYDIS_DISASSEMBLE(uint8_t *buff, ZydisDisassembledInstruction *decoded_instructions, size_t n, ZyanU64 *PC) {
 	ZyanUSize current_decoded=0;
 	ZyanUSize byteoffset= 0;
 	while (current_decoded < n && ZYAN_SUCCESS(ZydisDisassembleIntel(
